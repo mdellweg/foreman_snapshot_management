@@ -81,11 +81,13 @@ module ForemanSnapshotManagement
     config.to_prepare do
       begin
         # Load Foreman extensions
-        ::Foreman::Model::Vmware.send(:prepend, ForemanSnapshotManagement::VmwareExtensions)
         ::HostsHelper.send(:prepend, ForemanSnapshotManagement::HostsHelperExtension)
 
-        # Load Fog extensions
+        ::ForemanFogProxmox::Proxmox.send(:prepend, ForemanSnapshotManagement::ProxmoxExtensions) if ForemanFogProxmox::Proxmox.available?
+
         if Foreman::Model::Vmware.available?
+          ::Foreman::Model::Vmware.send(:prepend, ForemanSnapshotManagement::VmwareExtensions)
+          # Load Fog extensions
           ForemanSnapshotManagement.fog_vsphere_namespace::Real.send(:prepend, FogExtensions::Vsphere::Snapshots::Real)
           ForemanSnapshotManagement.fog_vsphere_namespace::Mock.send(:prepend, FogExtensions::Vsphere::Snapshots::Mock)
         end

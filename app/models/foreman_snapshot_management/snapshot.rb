@@ -37,7 +37,7 @@ module ForemanSnapshotManagement
     end
 
     def formatted_create_time
-      create_time.strftime('%F %H:%M')
+      create_time&.strftime('%F %H:%M')
     end
 
     def persisted?
